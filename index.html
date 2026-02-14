@@ -6,12 +6,7 @@
     <title>Nexus Quant Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: linear-gradient(135deg, #0a0a1a 0%, #0d1117 50%, #0a0a1a 100%);
             color: #e0e0e0;
@@ -19,20 +14,9 @@
             font-size: 13px;
             min-height: 100vh;
         }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #0a0a1a;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 3px;
-        }
-
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a1a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
         .header {
             border-bottom: 1px solid rgba(255,255,255,0.06);
             padding: 12px 20px;
@@ -40,69 +24,15 @@
             justify-content: space-between;
             align-items: center;
         }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-            .logo .dot {
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-                background: #00ff88;
-                animation: pulse 2s infinite;
-            }
-
-        @keyframes pulse {
-            0%,100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.4;
-            }
-        }
-
-        .logo span {
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 2px;
-            color: #00ff88;
-        }
-
-        .logo .ver {
-            font-size: 11px;
-            opacity: 0.3;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            font-size: 11px;
-        }
-
-        .live-badge {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 3px 10px;
-            border-radius: 4px;
-            font-size: 11px;
-        }
-
-        .live-on {
-            background: rgba(0,255,136,0.1);
-            color: #00ff88;
-        }
-
-        .live-off {
-            background: rgba(255,68,102,0.1);
-            color: #ff4466;
-        }
-
+        .logo { display: flex; align-items: center; gap: 10px; }
+        .logo .dot { width: 8px; height: 8px; border-radius: 50%; background: #00ff88; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .logo span { font-size: 14px; font-weight: 600; letter-spacing: 2px; color: #00ff88; }
+        .logo .ver { font-size: 11px; opacity: 0.3; }
+        .header-right { display: flex; align-items: center; gap: 16px; font-size: 11px; }
+        .live-badge { display: flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 4px; font-size: 11px; }
+        .live-on { background: rgba(0,255,136,0.1); color: #00ff88; }
+        .live-off { background: rgba(255,68,102,0.1); color: #ff4466; }
         .tabs {
             border-bottom: 1px solid rgba(255,255,255,0.04);
             padding: 0 20px;
@@ -110,7 +40,6 @@
             gap: 0;
             overflow-x: auto;
         }
-
         .tab {
             padding: 10px 16px;
             font-size: 11px;
@@ -122,357 +51,76 @@
             transition: all 0.2s;
             white-space: nowrap;
         }
-
-            .tab:hover {
-                color: #999;
-            }
-
-            .tab.active {
-                color: #00ff88;
-                border-bottom-color: #00ff88;
-                background: rgba(0,255,136,0.04);
-            }
-
-        .content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 16px 20px;
+        .tab:hover { color: #999; }
+        .tab.active { color: #00ff88; border-bottom-color: #00ff88; background: rgba(0,255,136,0.04); }
+        .content { max-width: 1200px; margin: 0 auto; padding: 16px 20px; }
+        .panel { display: none; }
+        .panel.active { display: block; }
+        .grid { display: grid; gap: 12px; }
+        .g6 { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+        .g2 { grid-template-columns: 1fr 1fr; }
+        .g3 { grid-template-columns: 1fr 1fr 1fr; }
+        @media (max-width: 768px) {
+            .g2, .g3 { grid-template-columns: 1fr; }
+            .g6 { grid-template-columns: repeat(3, 1fr); }
         }
-
-        .panel {
-            display: none;
-        }
-
-            .panel.active {
-                display: block;
-            }
-
-        .grid {
-            display: grid;
-            gap: 12px;
-        }
-
-        .g6 {
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        }
-
-        .g2 {
-            grid-template-columns: 1fr 1fr;
-        }
-
-        .g3 {
-            grid-template-columns: 1fr 1fr 1fr;
-        }
-
         .card {
             background: rgba(255,255,255,0.02);
             border: 1px solid rgba(255,255,255,0.06);
             border-radius: 8px;
             padding: 14px;
         }
-
-        .card-title {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            opacity: 0.35;
-            margin-bottom: 10px;
-        }
-
-        .stat-val {
-            font-size: 20px;
-            font-weight: 600;
-        }
-
-        .stat-label {
-            font-size: 10px;
-            opacity: 0.4;
-            margin-bottom: 4px;
-        }
-
-        .green {
-            color: #00ff88;
-        }
-
-        .red {
-            color: #ff4466;
-        }
-
-        .yellow {
-            color: #ffaa00;
-        }
-
-        .blue {
-            color: #8888ff;
-        }
-
-        .dim {
-            opacity: 0.4;
-        }
-
-        .coin-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-            .coin-row:last-child {
-                border: none;
-            }
-
-        .coin-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        .coin-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .coin-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .bias-badge {
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-        }
-
-        .trade-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 6px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.03);
-            font-size: 12px;
-        }
-
-        .side-badge {
-            padding: 1px 6px;
-            border-radius: 3px;
-            font-size: 10px;
-        }
-
-        .side-long {
-            color: #00ff88;
-            background: rgba(0,255,136,0.1);
-        }
-
-        .side-short {
-            color: #ff4466;
-            background: rgba(255,68,102,0.1);
-        }
-
-        .status-badge {
-            padding: 1px 6px;
-            border-radius: 3px;
-            font-size: 10px;
-        }
-
-        .st-open {
-            color: #ffaa00;
-            background: rgba(255,170,0,0.1);
-        }
-
-        .st-win {
-            color: #00ff88;
-            background: rgba(0,255,136,0.1);
-        }
-
-        .st-loss {
-            color: #ff4466;
-            background: rgba(255,68,102,0.1);
-        }
-
-        .gauge-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .gauge-label {
-            font-size: 10px;
-            opacity: 0.5;
-            margin-top: 4px;
-        }
-
-        .bar-bg {
-            height: 6px;
-            background: #1a1a2e;
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .bar-fill {
-            height: 100%;
-            border-radius: 3px;
-            transition: width 0.6s ease;
-        }
-
-        .pos-card {
-            border-left: 3px solid;
-            padding: 10px 14px;
-            margin-bottom: 8px;
-            border-radius: 0 8px 8px 0;
-            background: rgba(255,255,255,0.02);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            text-align: left;
-            padding: 8px 12px;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.35;
-            font-weight: 400;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-
-        td {
-            padding: 8px 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.03);
-        }
-
-        tr:hover {
-            background: rgba(255,255,255,0.02);
-        }
-
-        .dd-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 6px;
-        }
-
-        .dd-bar {
-            width: 60px;
-            height: 8px;
-            border-radius: 4px;
-            background: #1a1a2e;
-            overflow: hidden;
-        }
-
-        .setup-box {
-            text-align: center;
-            padding: 40px 20px;
-            max-width: 500px;
-            margin: 40px auto;
-        }
-
-            .setup-box h2 {
-                color: #00ff88;
-                margin-bottom: 16px;
-                font-size: 16px;
-            }
-
-            .setup-box input {
-                background: #1a1a2e;
-                border: 1px solid #333;
-                color: #e0e0e0;
-                padding: 8px 12px;
-                border-radius: 6px;
-                font-family: inherit;
-                font-size: 12px;
-                width: 100%;
-                margin-bottom: 8px;
-            }
-
-            .setup-box button {
-                background: #00ff88;
-                color: #0a0a1a;
-                border: none;
-                padding: 8px 24px;
-                border-radius: 6px;
-                font-family: inherit;
-                font-weight: 600;
-                cursor: pointer;
-                margin-top: 8px;
-            }
-
-                .setup-box button:hover {
-                    background: #00cc6a;
-                }
-
-            .setup-box .dim {
-                font-size: 11px;
-                margin-top: 12px;
-            }
-
-        .footer {
-            border-top: 1px solid rgba(255,255,255,0.04);
-            padding: 10px 20px;
-            margin-top: 40px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 10px;
-            opacity: 0.25;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .error-box {
-            text-align: center;
-            padding: 60px 20px;
-        }
-
-            .error-box h2 {
-                color: #ffaa00;
-                margin-bottom: 10px;
-            }
-
+        .card-title { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.35; margin-bottom: 10px; }
+        .stat-val { font-size: 20px; font-weight: 600; }
+        .stat-label { font-size: 10px; opacity: 0.4; margin-bottom: 4px; }
+        .green { color: #00ff88; }
+        .red { color: #ff4466; }
+        .yellow { color: #ffaa00; }
+        .blue { color: #8888ff; }
+        .dim { opacity: 0.4; }
+        .coin-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); flex-wrap: wrap; gap: 8px; }
+        .coin-row:last-child { border: none; }
+        .coin-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+        .coin-left { display: flex; align-items: center; gap: 10px; }
+        .coin-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .bias-badge { padding: 2px 8px; border-radius: 4px; font-size: 10px; }
+        .trade-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 12px; }
+        .side-badge { padding: 1px 6px; border-radius: 3px; font-size: 10px; }
+        .side-long { color: #00ff88; background: rgba(0,255,136,0.1); }
+        .side-short { color: #ff4466; background: rgba(255,68,102,0.1); }
+        .status-badge { padding: 1px 6px; border-radius: 3px; font-size: 10px; }
+        .st-open { color: #ffaa00; background: rgba(255,170,0,0.1); }
+        .st-win { color: #00ff88; background: rgba(0,255,136,0.1); }
+        .st-loss { color: #ff4466; background: rgba(255,68,102,0.1); }
+        .gauge-wrap { display: flex; flex-direction: column; align-items: center; }
+        .gauge-label { font-size: 10px; opacity: 0.5; margin-top: 4px; }
+        .bar-bg { height: 6px; background: #1a1a2e; border-radius: 3px; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+        .pos-card { border-left: 3px solid; padding: 10px 14px; margin-bottom: 8px; border-radius: 0 8px 8px 0; background: rgba(255,255,255,0.02); }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 8px 12px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.35; font-weight: 400; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        td { padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        tr:hover { background: rgba(255,255,255,0.02); }
+        .dd-row { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+        .dd-bar { width: 60px; height: 8px; border-radius: 4px; background: #1a1a2e; overflow: hidden; }
+        .setup-box { text-align: center; padding: 40px 20px; max-width: 500px; margin: 40px auto; }
+        .setup-box h2 { color: #00ff88; margin-bottom: 16px; font-size: 16px; }
+        .setup-box input { background: #1a1a2e; border: 1px solid #333; color: #e0e0e0; padding: 8px 12px; border-radius: 6px; font-family: inherit; font-size: 12px; width: 100%; margin-bottom: 8px; }
+        .setup-box button { background: #00ff88; color: #0a0a1a; border: none; padding: 8px 24px; border-radius: 6px; font-family: inherit; font-weight: 600; cursor: pointer; margin-top: 8px; }
+        .setup-box button:hover { background: #00cc6a; }
+        .setup-box .dim { font-size: 11px; margin-top: 12px; }
+        .footer { border-top: 1px solid rgba(255,255,255,0.04); padding: 10px 20px; margin-top: 40px; display: flex; justify-content: space-between; font-size: 10px; opacity: 0.25; flex-wrap: wrap; gap: 8px; }
+        .error-box { text-align: center; padding: 60px 20px; }
+        .error-box h2 { color: #ffaa00; margin-bottom: 10px; }
         @media (max-width: 768px) {
-            .g2, .g3 {
-                grid-template-columns: 1fr;
-            }
-
-            .g6 {
-                grid-template-columns: repeat(3, 1fr);
-            }
-
-            .header {
-                flex-wrap: wrap;
-                gap: 8px;
-            }
-
-            .tabs {
-                padding: 0 10px;
-            }
-
-            .tab {
-                padding: 8px 12px;
-                font-size: 10px;
-            }
-
-            .content {
-                padding: 12px;
-            }
+            .header { flex-wrap: wrap; gap: 8px; }
+            .tabs { padding: 0 10px; }
+            .tab { padding: 8px 12px; font-size: 10px; }
+            .content { padding: 12px; }
         }
     </style>
 </head>
 <body>
-
     <div class="header">
         <div class="logo">
             <div class="dot" id="statusDot"></div>
@@ -497,7 +145,6 @@
     </div>
 
     <div class="content">
-
         <div class="panel active" id="overview">
             <div class="grid g6" style="margin-bottom:12px" id="topStats"></div>
             <div class="grid g2">
@@ -550,7 +197,6 @@
                 <div id="setupStatus" style="margin-top:16px"></div>
             </div>
         </div>
-
     </div>
 
     <div class="footer">
@@ -561,298 +207,333 @@
     <script>
         // ─── CONFIG ───
         let CONFIG = {
-        binId: localStorage.getItem('nexus_bin_id') || '',
-        apiKey: localStorage.getItem('nexus_api_key') || '',
+            binId: localStorage.getItem('nexus_bin_id') || '',
+            apiKey: localStorage.getItem('nexus_api_key') || '',
         };
 
         function saveConfig() {
-        CONFIG.binId = document.getElementById('binId').value.trim();
-        CONFIG.apiKey = document.getElementById('apiKey').value.trim();
-        localStorage.setItem('nexus_bin_id', CONFIG.binId);
-        localStorage.setItem('nexus_api_key', CONFIG.apiKey);
-        document.getElementById('setupStatus').innerHTML = '<span class="green">Saved! Connecting...</span>';
-        fetchState();
+            CONFIG.binId = document.getElementById('binId').value.trim();
+            CONFIG.apiKey = document.getElementById('apiKey').value.trim();
+            localStorage.setItem('nexus_bin_id', CONFIG.binId);
+            localStorage.setItem('nexus_api_key', CONFIG.apiKey);
+            document.getElementById('setupStatus').innerHTML = '<span class="green">Saved! Connecting...</span>';
+            fetchState();
         }
 
-        // Load saved config
         document.getElementById('binId').value = CONFIG.binId;
         document.getElementById('apiKey').value = CONFIG.apiKey;
 
         // ─── QUANT MATH ───
         function bayesianBeta(w, l) {
-        const a = w + 1, b = l + 1, mean = a / (a + b);
-        const v = (a * b) / ((a + b) ** 2 * (a + b + 1)), s = Math.sqrt(v);
-        return { mean, lo: Math.max(0, mean - 1.96 * s), hi: Math.min(1, mean + 1.96 * s) };
+            const a = (w || 0) + 1, b = (l || 0) + 1;
+            const mean = a / (a + b);
+            const v = (a * b) / ((a + b) ** 2 * (a + b + 1));
+            const s = Math.sqrt(v);
+            return { mean, lo: Math.max(0, mean - 1.96 * s), hi: Math.min(1, mean + 1.96 * s) };
         }
         function garchCalc(returns) {
-        if (returns.length < 5) return { cur: 0, fore: 0, vov: 0 };
-        const om = 0.00001, al = 0.1, be = 0.85;
-        let s2 = returns.reduce((s, r) => s + r * r, 0) / returns.length;
-        const sigs = [];
-        for (const r of returns) { s2 = om + al * r * r + be * s2; sigs.push(Math.sqrt(s2)); }
-        const cur = sigs[sigs.length - 1] || 0;
-        const fore = Math.sqrt(om + al * (returns[returns.length - 1] || 0) ** 2 + be * s2);
-        return { cur: cur * 100, fore: fore * 100, vov: arrStd(sigs) * 100 };
+            if (!returns || returns.length < 5) return { cur: 0, fore: 0, vov: 0 };
+            const om = 0.00001, al = 0.1, be = 0.85;
+            let s2 = returns.reduce((s, r) => s + r * r, 0) / returns.length;
+            const sigs = [];
+            for (const r of returns) { s2 = om + al * r * r + be * s2; sigs.push(Math.sqrt(s2)); }
+            const cur = sigs[sigs.length - 1] || 0;
+            const fore = Math.sqrt(om + al * (returns[returns.length - 1] || 0) ** 2 + be * s2);
+            return { cur: cur * 100, fore: fore * 100, vov: arrStd(sigs) * 100 };
         }
         function zScore(vals) {
-        if (vals.length < 3) return 0;
-        const m = vals.reduce((a, b) => a + b, 0) / vals.length, sd = arrStd(vals);
-        return sd > 0 ? (vals[vals.length - 1] - m) / sd : 0;
+            if (!vals || vals.length < 3) return 0;
+            const m = vals.reduce((a, b) => a + b, 0) / vals.length, sd = arrStd(vals);
+            return sd > 0 ? (vals[vals.length - 1] - m) / sd : 0;
         }
         function shannonEntropy(returns) {
-        if (returns.length < 10) return 0;
-        const bins = 10, mn = Math.min(...returns), mx = Math.max(...returns), rng = mx - mn || 1;
-        const c = new Array(bins).fill(0);
-        returns.forEach(r => { c[Math.min(bins - 1, Math.floor(((r - mn) / rng) * bins))]++; });
-        let e = 0; const n = returns.length;
-        c.forEach(x => { if (x > 0) { const p = x / n; e -= p * Math.log2(p); } });
-        return e / Math.log2(bins);
+            if (!returns || returns.length < 10) return 0;
+            const bins = 10, mn = Math.min(...returns), mx = Math.max(...returns), rng = mx - mn || 1;
+            const c = new Array(bins).fill(0);
+            returns.forEach(r => { c[Math.min(bins - 1, Math.floor(((r - mn) / rng) * bins))]++; });
+            let e = 0; const n = returns.length;
+            c.forEach(x => { if (x > 0) { const p = x / n; e -= p * Math.log2(p); } });
+            return e / Math.log2(bins);
         }
         function kellyFrac(wr, aw, al) {
-        if (al === 0) return 0;
-        return Math.max(0, Math.min((wr - (1 - wr) / (aw / Math.abs(al))) * 0.5, 0.25));
+            const w = wr || 0, win = aw || 0, loss = al || 0;
+            if (!loss) return 0;
+            return Math.max(0, Math.min((w - (1 - w) / (win / Math.abs(loss))) * 0.5, 0.25));
         }
         function arrStd(a) {
-        if (a.length < 2) return 0;
-        const m = a.reduce((s, v) => s + v, 0) / a.length;
-        return Math.sqrt(a.reduce((s, v) => s + (v - m) ** 2, 0) / (a.length - 1));
+            if (!a || a.length < 2) return 0;
+            const m = a.reduce((s, v) => s + v, 0) / a.length;
+            return Math.sqrt(a.reduce((s, v) => s + (v - m) ** 2, 0) / (a.length - 1));
         }
         function profitFactor(r) {
-        const w = r.filter(x => x > 0).reduce((a, b) => a + b, 0);
-        const l = Math.abs(r.filter(x => x < 0).reduce((a, b) => a + b, 0));
-        return l > 0 ? w / l : w > 0 ? 99 : 0;
+            if (!r || !r.length) return 0;
+            const w = r.filter(x => x > 0).reduce((a, b) => a + b, 0);
+            const l = Math.abs(r.filter(x => x < 0).reduce((a, b) => a + b, 0));
+            return l > 0 ? w / l : w > 0 ? 99 : 0;
         }
         function sparkSVG(data, w, h) {
-        if (!data || data.length < 2) return '';
-        const cum = []; data.reduce((s, v) => { cum.push(s + v); return s + v; }, 0);
-        const mn = Math.min(...cum), mx = Math.max(...cum), rng = mx - mn || 1;
-        const pts = cum.map((v, i) => `${(i/(cum.length-1))*w},${h-((v-mn)/rng)*(h-4)-2}`).join(' ');
-        return `<svg width="${w}" height="${h}"><polyline points="${pts}" fill="none" stroke="${cum[cum.length-1]>=0?'#00ff88':'#ff4466'}" stroke-width="1.5"/></svg>`;
+            if (!data || data.length < 2) return '';
+            const cum = []; data.reduce((s, v) => { cum.push(s + v); return s + v; }, 0);
+            const mn = Math.min(...cum), mx = Math.max(...cum), rng = mx - mn || 1;
+            const pts = cum.map((v, i) => `${(i/(cum.length-1))*w},${h-((v-mn)/rng)*(h-4)-2}`).join(' ');
+            return `<svg width="${w}" height="${h}"><polyline points="${pts}" fill="none" stroke="${cum[cum.length-1]>=0?'#00ff88':'#ff4466'}" stroke-width="1.5"/></svg>`;
         }
         function gaugeSVG(val, max, label, color, unit) {
-        const v = val||0;
-        const pct = Math.min(100, (v / (max||1)) * 100);
-        return `<div class="gauge-wrap"><svg viewBox="0 0 36 36" width="68" height="68" style="transform:rotate(-90deg)"><path d="M18 2.0845a15.9155 15.9155 0 010 31.831 15.9155 15.9155 0 010-31.831" fill="none" stroke="#1a1a2e" stroke-width="3"/><path d="M18 2.0845a15.9155 15.9155 0 010 31.831 15.9155 15.9155 0 010-31.831" fill="none" stroke="${color}" stroke-width="3" stroke-dasharray="${pct},100"/></svg><div style="margin-top:-48px;font-size:11px;font-weight:600;color:${color}">${v.toFixed(2)}${unit||'%'}</div><div class="gauge-label" style="margin-top:22px">${label}</div></div>`;
+            const v = Number(val) || 0;
+            const pct = Math.min(100, (v / (max || 1)) * 100);
+            return `<div class="gauge-wrap"><svg viewBox="0 0 36 36" width="68" height="68" style="transform:rotate(-90deg)"><path d="M18 2.0845a15.9155 15.9155 0 010 31.831 15.9155 15.9155 0 010-31.831" fill="none" stroke="#1a1a2e" stroke-width="3"/><path d="M18 2.0845a15.9155 15.9155 0 010 31.831 15.9155 15.9155 0 010-31.831" fill="none" stroke="${color}" stroke-width="3" stroke-dasharray="${pct},100"/></svg><div style="margin-top:-48px;font-size:11px;font-weight:600;color:${color}">${v.toFixed(2)}${unit || '%'}</div><div class="gauge-label" style="margin-top:22px">${label}</div></div>`;
         }
 
         // ─── RENDER ───
         function render(d) {
-        try {
-        if (d.error) {
-        document.querySelector('.content').innerHTML = `<div class="error-box"><h2>${d.error.includes('not found') ? 'Bot Offline' : 'Setup Required'}</h2><p style="max-width:400px;margin:0 auto">${d.error}</p><p class="dim" style="margin-top:12px">Go to Setup tab to configure JSONBin credentials</p></div>`;
-        document.getElementById('liveBadge').className = 'live-badge live-off';
-        document.getElementById('liveBadge').innerHTML = '<div class="dot" style="width:6px;height:6px;border-radius:50%;background:#ff4466"></div><span>OFFLINE</span>';
-        return;
-        }
+            try {
+                if (d.error) {
+                    document.querySelector('.content').innerHTML = `<div class="error-box"><h2>${d.error.includes('not found') ? 'Bot Offline' : 'Setup Required'}</h2><p style="max-width:400px;margin:0 auto">${d.error}</p><p class="dim" style="margin-top:12px">Go to Setup tab to configure JSONBin credentials</p></div>`;
+                    document.getElementById('liveBadge').className = 'live-badge live-off';
+                    document.getElementById('liveBadge').innerHTML = '<div class="dot" style="width:6px;height:6px;border-radius:50%;background:#ff4466"></div><span>OFFLINE</span>';
+                    return;
+                }
 
-        // Check staleness
-        const age = (Date.now()/1000) - (d.timestamp || 0);
-        const isLive = age < 120;
-        document.getElementById('statusDot').style.background = isLive ? (d.killed ? '#ff4466' : '#00ff88') : '#ffaa00';
-        document.getElementById('liveBadge').className = `live-badge ${isLive ? 'live-on' : 'live-off'}`;
-        document.getElementById('liveBadge').innerHTML = `<div class="dot" style="width:6px;height:6px;border-radius:50%;background:${isLive?'#00ff88':'#ffaa00'}"></div><span>${isLive?'LIVE':age<600?'STALE':'OFFLINE'}</span>`;
-        document.getElementById('lastUpdate').textContent = `Updated ${Math.floor(age||0)}s ago`;
+                const age = (Date.now()/1000) - (Number(d.timestamp) || 0);
+                const isLive = age < 120;
+                document.getElementById('statusDot').style.background = isLive ? (d.killed ? '#ff4466' : '#00ff88') : '#ffaa00';
+                document.getElementById('liveBadge').className = `live-badge ${isLive ? 'live-on' : 'live-off'}`;
+                document.getElementById('liveBadge').innerHTML = `<div class="dot" style="width:6px;height:6px;border-radius:50%;background:${isLive?'#00ff88':'#ffaa00'}"></div><span>${isLive?'LIVE':age<600?'STALE':'OFFLINE'}</span>`;
+                document.getElementById('lastUpdate').textContent = `Updated ${Math.floor(age || 0)}s ago`;
 
-        const allPnl = Object.values(d.coins||{}).flatMap(c => c.recent_pnl || []);
-        const totT = Object.values(d.coins||{}).reduce((s, c) => s + (c.trades||0), 0);
-        const totW = Object.values(d.coins||{}).reduce((s, c) => s + (c.wins||0), 0);
-        const totPnl = Object.values(d.coins||{}).reduce((s, c) => s + (c.pnl||0), 0);
-        const wr = totT > 0 ? totW / totT : 0;
-        const g = garchCalc(allPnl);
-        const ent = shannonEntropy(allPnl);
-        const wArr = allPnl.filter(r => r > 0), lArr = allPnl.filter(r => r < 0);
-        const avgW = wArr.length > 0 ? wArr.reduce((a,b)=>a+b,0)/wArr.length : 0;
-        const avgL = lArr.length > 0 ? lArr.reduce((a,b)=>a+b,0)/lArr.length : 0;
-        const kf = kellyFrac(wr, avgW, avgL);
-        const pf = profitFactor(allPnl);
+                const coins = d.coins || {};
+                const allPnl = Object.values(coins).flatMap(c => c.recent_pnl || []);
+                const totT = Object.values(coins).reduce((s, c) => s + (Number(c.trades) || 0), 0);
+                const totW = Object.values(coins).reduce((s, c) => s + (Number(c.wins) || 0), 0);
+                const totPnl = Object.values(coins).reduce((s, c) => s + (Number(c.pnl) || 0), 0);
+                const wr = totT > 0 ? totW / totT : 0;
+                const g = garchCalc(allPnl);
+                const ent = shannonEntropy(allPnl);
+                const wArr = allPnl.filter(r => r > 0), lArr = allPnl.filter(r => r < 0);
+                const avgW = wArr.length > 0 ? wArr.reduce((a,b)=>a+b,0)/wArr.length : 0;
+                const avgL = lArr.length > 0 ? lArr.reduce((a,b)=>a+b,0)/lArr.length : 0;
+                const kf = kellyFrac(wr, avgW, avgL);
+                const pf = profitFactor(allPnl);
 
-        document.getElementById('clock').textContent = new Date().toLocaleTimeString();
-        if (d.uptime_sec) { const h=Math.floor(d.uptime_sec/3600), m=Math.floor((d.uptime_sec%3600)/60); document.getElementById('uptime').textContent = `Up ${h}h${m}m`; }
+                document.getElementById('clock').textContent = new Date().toLocaleTimeString();
+                if (d.uptime_sec) {
+                    const h = Math.floor(d.uptime_sec/3600), m = Math.floor((d.uptime_sec%3600)/60);
+                    document.getElementById('uptime').textContent = `Up ${h}h${m}m`;
+                }
 
-        // OVERVIEW
-        const stats = [
-        {l:'Balance',v:'$'+((d.balance||0)).toFixed(2),c:'#00ff88'},
-        {l:'Total PnL',v:(totPnl>=0?'+':'')+'$'+(totPnl||0).toFixed(2),c:(totPnl||0)>=0?'#00ff88':'#ff4466'},
-        {l:'Win Rate',v:((wr||0)*100).toFixed(0)+'%',c:(wr||0)>=0.5?'#00ff88':'#ffaa00'},
-        {l:'Trades',v:totT||0,c:'#8888ff'},
-        {l:'Sharpe',v:(d.sharpe||0).toFixed(2),c:(d.sharpe||0)>1?'#00ff88':'#ffaa00'},
-        {l:'DD',v:(d.drawdown_pct||0).toFixed(1)+'%',c:(d.drawdown_pct||0)<3?'#00ff88':(d.drawdown_pct||0)<5?'#ffaa00':'#ff4466'},
-        ];
-        document.getElementById('topStats').innerHTML = stats.map(s => `<div class="card"><div class="stat-label">${s.l}</div><div class="stat-val" style="color:${s.c}">${s.v}</div></div>`).join('');
+                // OVERVIEW
+                const stats = [
+                    {l:'Balance',v:'$'+(Number(d.balance)||0).toFixed(2),c:'#00ff88'},
+                    {l:'Total PnL',v:(totPnl>=0?'+':'')+'$'+(totPnl||0).toFixed(2),c:totPnl>=0?'#00ff88':'#ff4466'},
+                    {l:'Win Rate',v:((wr||0)*100).toFixed(0)+'%',c:wr>=0.5?'#00ff88':'#ffaa00'},
+                    {l:'Trades',v:totT||0,c:'#8888ff'},
+                    {l:'Sharpe',v:(Number(d.sharpe)||0).toFixed(2),c:(d.sharpe||0)>1?'#00ff88':'#ffaa00'},
+                    {l:'DD',v:(Number(d.drawdown_pct)||0).toFixed(1)+'%',c:(d.drawdown_pct||0)<3?'#00ff88':(d.drawdown_pct||0)<5?'#ffaa00':'#ff4466'},
+                ];
+                document.getElementById('topStats').innerHTML = stats.map(s => `<div class="card"><div class="stat-label">${s.l}</div><div class="stat-val" style="color:${s.c}">${s.v}</div></div>`).join('');
 
-        // Coins
-        let ch = '<div class="card-title">Coins</div>';
-        for (const [sym, c] of Object.entries(d.coins||{})) {
-        const cwr = (c.trades||0) > 0 ? ((c.wins||0)/c.trades*100).toFixed(0) : 0;
-        const pc = (c.pnl||0) >= 0 ? '#00ff88' : '#ff4466';
-        const bias = (d.llm_biases||{})[sym];
-        const bb = bias ? `<span class="bias-badge" style="background:${bias.bias==='LONG'?'rgba(0,255,136,0.1)':bias.bias==='SHORT'?'rgba(255,68,102,0.1)':'rgba(255,170,0,0.1)'};color:${bias.bias==='LONG'?'#00ff88':bias.bias==='SHORT'?'#ff4466':'#ffaa00'}">${bias.bias} ${((bias.conf||0)*100).toFixed(0)}%</span>` : '';
-        ch += `<div class="coin-row"><div class="coin-left"><div class="coin-icon" style="background:${(c.pnl||0)>=0?'rgba(0,255,136,0.12)':'rgba(255,68,102,0.12)'};color:${pc}">${sym.slice(0,2)}</div><div><div style="font-size:13px;font-weight:500">${sym}</div><div style="font-size:10px" class="dim">${c.regime||'unknown'} | ${(c.score||0).toFixed(2)}</div></div></div><div class="coin-right">${sparkSVG(c.recent_pnl||[],60,24)}<div style="text-align:right"><div style="color:${pc}">${(c.pnl||0)>=0?'+':''}$${(c.pnl||0).toFixed(2)}</div><div class="dim" style="font-size:10px">${c.trades||0}t ${cwr}%WR</div></div>${bb}</div></div>`;
-        }
-        document.getElementById('coinList').innerHTML = ch;
+                // Coins
+                let ch = '<div class="card-title">Coins</div>';
+                for (const [sym, c] of Object.entries(coins)) {
+                    const ctrades = Number(c.trades) || 0;
+                    const cwins = Number(c.wins) || 0;
+                    const cpnl = Number(c.pnl) || 0;
+                    const cscore = Number(c.score) || 0;
+                    const cwr = ctrades > 0 ? (cwins/ctrades*100).toFixed(0) : 0;
+                    const pc = cpnl >= 0 ? '#00ff88' : '#ff4466';
+                    const bias = (d.llm_biases || {})[sym];
+                    const bb = bias ? `<span class="bias-badge" style="background:${bias.bias==='LONG'?'rgba(0,255,136,0.1)':bias.bias==='SHORT'?'rgba(255,68,102,0.1)':'rgba(255,170,0,0.1)'};color:${bias.bias==='LONG'?'#00ff88':bias.bias==='SHORT'?'#ff4466':'#ffaa00'}">${bias.bias || 'NEUTRAL'} ${(Number(bias.conf||0)*100).toFixed(0)}%</span>` : '';
+                    ch += `<div class="coin-row"><div class="coin-left"><div class="coin-icon" style="background:${cpnl>=0?'rgba(0,255,136,0.12)':'rgba(255,68,102,0.12)'};color:${pc}">${sym.slice(0,2)}</div><div><div style="font-size:13px;font-weight:500">${sym}</div><div style="font-size:10px" class="dim">${c.regime||'unknown'} | ${cscore.toFixed(2)}</div></div></div><div class="coin-right">${sparkSVG(c.recent_pnl||[],60,24)}<div style="text-align:right"><div style="color:${pc}">${cpnl>=0?'+':''}$${cpnl.toFixed(2)}</div><div class="dim" style="font-size:10px">${ctrades}t ${cwr}%WR</div></div>${bb}</div></div>`;
+                }
+                document.getElementById('coinList').innerHTML = ch;
 
-        // Recent trades + open positions
-        let rh = '<div class="card-title">Recent Trades</div>';
-        const tt = [...(d.recent_trades||[])].reverse().slice(0,10);
-        for (const [sym, pos] of Object.entries(d.positions||{})) tt.unshift({time:'NOW',symbol:sym,side:pos.side,entry:pos.entry,pnl:null,status:'open',roi:pos.upnl_pct});
-        for (const t of tt.slice(0,10)) {
-        const sc = t.side==='long'?'side-long':'side-short';
-        const stc = t.status==='open'?'st-open':t.status==='win'?'st-win':'st-loss';
-        const ps = t.pnl!=null?`<span style="color:${(t.pnl||0)>=0?'#00ff88':'#ff4466'}">${(t.pnl||0)>=0?'+':''}${(t.pnl||0).toFixed(2)}</span>`:`<span style="color:#ffaa00">${(t.roi!=null && t.roi!==undefined)?(t.roi+'%'):'-'}</span>`;
-        const es = t.entry>100?(t.entry||0).toFixed(0):(t.entry||0);
-        rh += `<div class="trade-row"><div style="display:flex;align-items:center;gap:6px"><span class="dim" style="width:56px;font-size:10px">${t.time||'--'}</span><span class="side-badge ${sc}">${(t.side||'').toUpperCase()}</span><span>${t.symbol||'--'}</span></div><div style="display:flex;align-items:center;gap:6px">${ps}<span class="status-badge ${stc}">${(t.status||'').toUpperCase()}</span></div></div>`;
-        }
-        document.getElementById('recentTrades').innerHTML = rh;
+                // Recent trades
+                let rh = '<div class="card-title">Recent Trades</div>';
+                const tt = [...(d.recent_trades||[])].reverse().slice(0,10);
+                for (const [sym, pos] of Object.entries(d.positions||{})) {
+                    tt.unshift({time:'NOW',symbol:sym,side:pos.side,entry:pos.entry,pnl:null,status:'open',roi:pos.upnl_pct});
+                }
+                for (const t of tt.slice(0,10)) {
+                    const sc = (t.side||'')==='long'?'side-long':'side-short';
+                    const stc = (t.status||'')==='open'?'st-open':(t.status||'')==='win'?'st-win':'st-loss';
+                    const tpnl = t.pnl;
+                    const troi = t.roi;
+                    const ps = tpnl!=null?`<span style="color:${(tpnl>=0?'#00ff88':'#ff4466')}">${tpnl>=0?'+':''}${Number(tpnl).toFixed(2)}</span>`:`<span style="color:#ffaa00">${troi!=null?(Number(troi).toFixed(1)+'%'):'-'}</span>`;
+                    rh += `<div class="trade-row"><div style="display:flex;align-items:center;gap:6px"><span class="dim" style="width:56px;font-size:10px">${t.time||'--'}</span><span class="side-badge ${sc}">${(t.side||'').toUpperCase()}</span><span>${t.symbol||'--'}</span></div><div style="display:flex;align-items:center;gap:6px">${ps}<span class="status-badge ${stc}">${(t.status||'').toUpperCase()}</span></div></div>`;
+                }
+                document.getElementById('recentTrades').innerHTML = rh;
 
-        // QUANT
-        const gSafe = {cur: g?.cur||0, fore: g?.fore||0, vov: g?.vov||0};
-        const entSafe = ent||0, pfSafe = pf||0, kfSafe = kf||0;
-        document.getElementById('quantGauges').innerHTML = [
-        gaugeSVG(gSafe.cur,2,'GARCH Vol','#8888ff'), gaugeSVG(gSafe.fore,2,'Vol Forecast',gSafe.fore>gSafe.cur?'#ff4466':'#00ff88'),
-        gaugeSVG(entSafe*100,100,'Entropy',entSafe>0.7?'#ff4466':'#00ff88'), gaugeSVG(kfSafe*100,25,'Kelly %','#00ff88'),
-        gaugeSVG(pfSafe,3,'Profit Factor',pfSafe>1?'#00ff88':'#ff4466','x'), gaugeSVG(d.sharpe||0,3,'Sharpe',(d.sharpe||0)>1?'#00ff88':'#ffaa00'),
-        ].join('');
+                // QUANT
+                const gcur = Number(g.cur) || 0, gfore = Number(g.fore) || 0;
+                const entNum = Number(ent) || 0, pfNum = Number(pf) || 0, kfNum = Number(kf) || 0;
+                document.getElementById('quantGauges').innerHTML = [
+                    gaugeSVG(gcur,2,'GARCH Vol','#8888ff'), gaugeSVG(gfore,2,'Vol Forecast',gfore>gcur?'#ff4466':'#00ff88'),
+                    gaugeSVG(entNum*100,100,'Entropy',entNum>0.7?'#ff4466':'#00ff88'), gaugeSVG(kfNum*100,25,'Kelly %','#00ff88'),
+                    gaugeSVG(pfNum,3,'Profit Factor',pfNum>1?'#00ff88':'#ff4466','x'), gaugeSVG(Number(d.sharpe)||0,3,'Sharpe',(d.sharpe||0)>1?'#00ff88':'#ffaa00'),
+                ].join('');
 
-        let byH = '<div class="card-title">Bayesian Win Rate (95% CI)</div>';
-        byH += bayRow('ALL', bayesianBeta(totW||0, (totT-totW)||0));
-        for (const [sym, c] of Object.entries(d.coins||{}).filter(([_,c])=>(c.trades||0)>0)) {
-            const w = c.wins||0, l = Math.max(0, (c.trades||0)-w);
-            byH += bayRow(sym, bayesianBeta(w, l));
-        }
-        byH += '<div class="dim" style="font-size:10px;margin-top:8px">Narrow = confident | Wide = need data</div>';
-        document.getElementById('bayesianCard').innerHTML = byH;
+                // Bayesian
+                let byH = '<div class="card-title">Bayesian Win Rate (95% CI)</div>';
+                byH += bayRow('ALL', bayesianBeta(totW, totT-totW));
+                for (const [sym, c] of Object.entries(coins).filter(([_,c])=>(Number(c.trades)||0)>0)) {
+                    const w = Number(c.wins) || 0, l = Math.max(0, (Number(c.trades) || 0) - w);
+                    byH += bayRow(sym, bayesianBeta(w, l));
+                }
+                byH += '<div class="dim" style="font-size:10px;margin-top:8px">Narrow = confident | Wide = need data</div>';
+                document.getElementById('bayesianCard').innerHTML = byH;
 
-        let zsH = '<div class="card-title">Z-Score (PnL Deviation)</div>';
-        for (const [sym, c] of Object.entries(d.coins||{}).filter(([_,c])=>(c.recent_pnl||[]).length>=3)) zsH += zsRow(sym, zScore(c.recent_pnl));
-        document.getElementById('zscoreCard').innerHTML = zsH;
+                // Z-Score
+                let zsH = '<div class="card-title">Z-Score (PnL Deviation)</div>';
+                for (const [sym, c] of Object.entries(coins).filter(([_,c])=>(c.recent_pnl||[]).length>=3)) {
+                    zsH += zsRow(sym, zScore(c.recent_pnl));
+                }
+                document.getElementById('zscoreCard').innerHTML = zsH;
 
-        document.getElementById('garchCard').innerHTML = `<div class="card-title">GARCH Volatility</div><div class="grid g3"><div><div class="stat-label">Current</div><div class="stat-val blue">${(g.cur||0).toFixed(3)}%</div></div><div><div class="stat-label">Forecast</div><div class="stat-val" style="color:${g.fore>g.cur?'#ff4466':'#00ff88'}">${(g.fore||0).toFixed(3)}%</div></div><div><div class="stat-label">Vol-of-Vol</div><div class="stat-val yellow">${(g.vov||0).toFixed(3)}%</div></div></div>`;
-        const entV = ent||0; document.getElementById('entropyCard').innerHTML = `<div class="card-title">Shannon Entropy</div><div style="display:flex;align-items:center;gap:16px"><div class="stat-val" style="color:${entV>0.7?'#ff4466':entV>0.5?'#ffaa00':'#00ff88'}">${(entV*100).toFixed(1)}%</div><div style="flex:1"><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(100,entV*100)}%;background:linear-gradient(90deg,#00ff88,#ffaa00,#ff4466)"></div></div></div><span class="dim" style="font-size:10px">${entV>0.7?'HIGH':entV>0.5?'MOD':'LOW'}</span></div>`;
+                // GARCH Card
+                const gvov = Number(g.vov) || 0;
+                document.getElementById('garchCard').innerHTML = `<div class="card-title">GARCH Volatility</div><div class="grid g3"><div><div class="stat-label">Current</div><div class="stat-val blue">${gcur.toFixed(3)}%</div></div><div><div class="stat-label">Forecast</div><div class="stat-val" style="color:${gfore>gcur?'#ff4466':'#00ff88'}">${gfore.toFixed(3)}%</div></div><div><div class="stat-label">Vol-of-Vol</div><div class="stat-val yellow">${gvov.toFixed(3)}%</div></div></div>`;
+                
+                // Entropy Card
+                document.getElementById('entropyCard').innerHTML = `<div class="card-title">Shannon Entropy</div><div style="display:flex;align-items:center;gap:16px"><div class="stat-val" style="color:${entNum>0.7?'#ff4466':entNum>0.5?'#ffaa00':'#00ff88'}">${(entNum*100).toFixed(1)}%</div><div style="flex:1"><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(100,entNum*100)}%;background:linear-gradient(90deg,#00ff88,#ffaa00,#ff4466)"></div></div></div><span class="dim" style="font-size:10px">${entNum>0.7?'HIGH':entNum>0.5?'MOD':'LOW'}</span></div>`;
 
-        // POSITIONS
-        let pH = '<div class="card-title">Open Positions</div>';
-        const pe = Object.entries(d.positions||{});
-        if (!pe.length) pH += '<div class="dim" style="padding:20px;text-align:center">No open positions</div>';
-        for (const [sym, pos] of pe) {
-        const col = pos.side==='long'?'#00ff88':'#ff4466';
-        const upnl = pos.upnl_pct||0; pH += `<div class="pos-card" style="border-color:${col}"><div style="display:flex;justify-content:space-between;align-items:center"><div><span class="side-badge ${pos.side==='long'?'side-long':'side-short'}">${(pos.side||'').toUpperCase()}</span><span style="font-weight:600;margin-left:8px">${sym}</span></div><div style="text-align:right"><div style="color:${upnl>=0?'#00ff88':'#ff4466'};font-size:16px;font-weight:600">${upnl>=0?'+':''}${upnl.toFixed ? upnl.toFixed(1) : upnl}%</div></div></div><div style="display:flex;gap:16px;margin-top:8px;font-size:11px;flex-wrap:wrap" class="dim"><span>Entry: $${(pos.entry||0)>100?(pos.entry||0).toFixed(0):(pos.entry||0)}</span><span>Now: $${(pos.current_price||0)>100?(pos.current_price||0).toFixed(0):(pos.current_price||0)}</span><span>SL: $${(pos.sl||0)>100?(pos.sl||0).toFixed(0):(pos.sl||0)}</span><span>Size: $${pos.size_usd||0}</span></div></div>`;
-        }
-        document.getElementById('positionsCard').innerHTML = pH;
+                // POSITIONS
+                let pH = '<div class="card-title">Open Positions</div>';
+                const pe = Object.entries(d.positions||{});
+                if (!pe.length) pH += '<div class="dim" style="padding:20px;text-align:center">No open positions</div>';
+                for (const [sym, pos] of pe) {
+                    const pside = pos.side || '';
+                    const col = pside==='long'?'#00ff88':'#ff4466';
+                    const pupnl = Number(pos.upnl_pct) || 0;
+                    const pentry = Number(pos.entry) || 0;
+                    const pprice = Number(pos.current_price) || 0;
+                    const psl = Number(pos.sl) || 0;
+                    const psize = Number(pos.size_usd) || 0;
+                    pH += `<div class="pos-card" style="border-color:${col}"><div style="display:flex;justify-content:space-between;align-items:center"><div><span class="side-badge ${pside==='long'?'side-long':'side-short'}">${pside.toUpperCase()}</span><span style="font-weight:600;margin-left:8px">${sym}</span></div><div style="text-align:right"><div style="color:${pupnl>=0?'#00ff88':'#ff4466'};font-size:16px;font-weight:600">${pupnl>=0?'+':''}${pupnl.toFixed(1)}%</div></div></div><div style="display:flex;gap:16px;margin-top:8px;font-size:11px;flex-wrap:wrap" class="dim"><span>Entry: $${pentry>100?pentry.toFixed(0):pentry.toFixed(2)}</span><span>Now: $${pprice>100?pprice.toFixed(0):pprice.toFixed(2)}</span><span>SL: $${psl>100?psl.toFixed(0):psl.toFixed(2)}</span><span>Size: $${psize}</span></div></div>`;
+                }
+                document.getElementById('positionsCard').innerHTML = pH;
 
-        // TRADES
-        let tH = '<div class="card-title">Trade Log</div><table><thead><tr><th>Time</th><th>Coin</th><th>Side</th><th>Entry</th><th>PnL</th></tr></thead><tbody>';
-        for (const t of [...(d.recent_trades||[])].reverse()) {
-            const entry = t.entry||0;
-            const pnl = t.pnl;
-            tH += `<tr><td class="dim">${t.time||'--'}</td><td>${t.symbol||'--'}</td><td><span class="side-badge ${(t.side||'')==='long'?'side-long':'side-short'}">${(t.side||'').toUpperCase()}</span></td><td class="dim">$${entry>100?entry.toFixed(0):entry}</td><td style="color:${(pnl||0)>=0?'#00ff88':'#ff4466'}">${pnl!=null?(pnl>=0?'+':'')+pnl.toFixed(2):'-'}</td></tr>`;
-        }
-        tH += '</tbody></table>';
-        document.getElementById('tradeTable').innerHTML = tH;
+                // TRADES TABLE
+                let tH = '<div class="card-title">Trade Log</div><table><thead><tr><th>Time</th><th>Coin</th><th>Side</th><th>Entry</th><th>PnL</th></tr></thead><tbody>';
+                for (const t of [...(d.recent_trades||[])].reverse()) {
+                    const tentry = Number(t.entry) || 0;
+                    const tpnl = t.pnl;
+                    const tpnlNum = Number(tpnl);
+                    tH += `<tr><td class="dim">${t.time||'--'}</td><td>${t.symbol||'--'}</td><td><span class="side-badge ${(t.side||'')==='long'?'side-long':'side-short'}">${(t.side||'').toUpperCase()}</span></td><td class="dim">$${tentry>100?tentry.toFixed(0):tentry.toFixed(2)}</td><td style="color:${(tpnlNum||0)>=0?'#00ff88':'#ff4466'}">${tpnl!=null?(tpnlNum>=0?'+':'')+tpnlNum.toFixed(2):'-'}</td></tr>`;
+                }
+                tH += '</tbody></table>';
+                document.getElementById('tradeTable').innerHTML = tH;
 
-        // BRAIN
-        let sH = '<div class="card-title">Strategy Edge</div>';
-        for (const [n, st] of Object.entries(d.strategies||{})) {
-        const c = st.edge>0.6?'#00ff88':st.edge<0.4?'#ff4466':'#ffaa00';
-        const edgeVal = st.edge||0; sH += `<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span class="dim">${n}</span><span style="color:${c}">${edgeVal.toFixed(2)} | ${st.trades||0}t</span></div><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(100,edgeVal*100)}%;background:${c}"></div></div></div>`;
-        }
-        document.getElementById('strategyCard').innerHTML = sH;
+                // BRAIN
+                let sH = '<div class="card-title">Strategy Edge</div>';
+                for (const [n, st] of Object.entries(d.strategies||{})) {
+                    const stedge = Number(st.edge) || 0;
+                    const c = stedge>0.6?'#00ff88':stedge<0.4?'#ff4466':'#ffaa00';
+                    sH += `<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span class="dim">${n}</span><span style="color:${c}">${stedge.toFixed(2)} | ${Number(st.trades)||0}t</span></div><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(100,stedge*100)}%;background:${c}"></div></div></div>`;
+                }
+                document.getElementById('strategyCard').innerHTML = sH;
 
-        const ddL = [{t:3,a:'Reduce 25%',c:'#ffaa00'},{t:4,a:'Reduce 50%',c:'#ff8844'},{t:5.5,a:'Close All',c:'#ff6644'},{t:7,a:'HALT',c:'#ff4466'}];
-        let ddH = '<div class="card-title">DD Protection</div>';
-        for (const dd of ddL) { const p=Math.min(100,((d.drawdown_pct||0)/dd.t)*100); const a=(d.drawdown_pct||0)>=dd.t; ddH += `<div class="dd-row"><div class="dd-bar"><div class="bar-fill" style="width:${p}%;background:${a?dd.c:'rgba(255,255,255,0.08)'}"></div></div><span style="font-size:11px;width:30px;color:${a?dd.c:'#444'}">${dd.t}%</span><span class="dim" style="font-size:11px">${dd.a}</span></div>`; }
-        ddH += `<div style="margin-top:8px;font-size:11px">Current: <span style="color:${(d.drawdown_pct||0)<3?'#00ff88':'#ffaa00'}">${(d.drawdown_pct||0).toFixed(2)}%</span></div>`;
-        document.getElementById('ddCard').innerHTML = ddH;
+                // DD Protection
+                const ddL = [{t:3,a:'Reduce 25%',c:'#ffaa00'},{t:4,a:'Reduce 50%',c:'#ff8844'},{t:5.5,a:'Close All',c:'#ff6644'},{t:7,a:'HALT',c:'#ff4466'}];
+                let ddH = '<div class="card-title">DD Protection</div>';
+                const ddcurr = Number(d.drawdown_pct) || 0;
+                for (const dd of ddL) {
+                    const p = Math.min(100,(ddcurr/dd.t)*100);
+                    const a = ddcurr>=dd.t;
+                    ddH += `<div class="dd-row"><div class="dd-bar"><div class="bar-fill" style="width:${p}%;background:${a?dd.c:'rgba(255,255,255,0.08)'}"></div></div><span style="font-size:11px;width:30px;color:${a?dd.c:'#444'}">${dd.t}%</span><span class="dim" style="font-size:11px">${dd.a}</span></div>`;
+                }
+                ddH += `<div style="margin-top:8px;font-size:11px">Current: <span style="color:${ddcurr<3?'#00ff88':'#ffaa00'}">${ddcurr.toFixed(2)}%</span></div>`;
+                document.getElementById('ddCard').innerHTML = ddH;
 
-        const kfSafe = kf||0; document.getElementById('kellyCard').innerHTML = `<div class="card-title">Kelly</div><div><div class="stat-label">Full</div><div class="stat-val yellow">${(kfSafe*2*100).toFixed(1)}%</div></div><div style="margin-top:8px"><div class="stat-label">Half (used)</div><div class="stat-val green">${(kfSafe*100).toFixed(1)}%</div></div>`;
+                // Kelly
+                document.getElementById('kellyCard').innerHTML = `<div class="card-title">Kelly</div><div><div class="stat-label">Full</div><div class="stat-val yellow">${(kfNum*2*100).toFixed(1)}%</div></div><div style="margin-top:8px"><div class="stat-label">Half (used)</div><div class="stat-val green">${(kfNum*100).toFixed(1)}%</div></div>`;
 
-        let rgH = '<div class="card-title">Regime</div>';
-        for (const [sym, c] of Object.entries(d.coins||{})) {
-            const regime = c.regime||'unknown';
-            rgH += `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03)"><span>${sym}</span><span style="color:${regime.includes('bull')?'#00ff88':regime.includes('bear')?'#ff4466':'#ffaa00'}">${regime}</span></div>`;
-        }
-        document.getElementById('regimeCard').innerHTML = rgH;
+                // Regime
+                let rgH = '<div class="card-title">Regime</div>';
+                for (const [sym, c] of Object.entries(coins)) {
+                    const regime = c.regime || 'unknown';
+                    rgH += `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03)"><span>${sym}</span><span style="color:${regime.includes('bull')?'#00ff88':regime.includes('bear')?'#ff4466':'#ffaa00'}">${regime}</span></div>`;
+                }
+                document.getElementById('regimeCard').innerHTML = rgH;
 
-        let llH = '<div class="card-title">LLM Biases</div>';
-        for (const [sym, b] of Object.entries(d.llm_biases||{})) {
-            const bias = (b?.bias)||'NEUTRAL';
-            llH += `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03)"><span>${sym}</span><span style="color:${bias==='LONG'?'#00ff88':bias==='SHORT'?'#ff4466':'#ffaa00'}">${bias} ${((b?.conf||0)*100).toFixed(0)}%</span></div>`;
-        }
-        document.getElementById('llmCard').innerHTML = llH;
-        } catch(e) {
-            console.error('Render error:', e, 'at line:', e.lineNumber);
-            document.querySelector('.content').innerHTML = `<div class="error-box"><h2>Render Error</h2><p style="max-width:400px;margin:0 auto">${e.message}</p><p class="dim" style="margin-top:12px">Check console for details</p></div>`;
-        }
+                // LLM Biases
+                let llH = '<div class="card-title">LLM Biases</div>';
+                for (const [sym, b] of Object.entries(d.llm_biases||{})) {
+                    const bias = (b && b.bias) ? b.bias : 'NEUTRAL';
+                    const conf = Number(b && b.conf) || 0;
+                    llH += `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03)"><span>${sym}</span><span style="color:${bias==='LONG'?'#00ff88':bias==='SHORT'?'#ff4466':'#ffaa00'}">${bias} ${(conf*100).toFixed(0)}%</span></div>`;
+                }
+                document.getElementById('llmCard').innerHTML = llH;
+
+            } catch(e) {
+                console.error('Render error:', e);
+                document.querySelector('.content').innerHTML = `<div class="error-box"><h2>Render Error</h2><p style="max-width:400px;margin:0 auto">${e.message}</p><p class="dim" style="margin-top:12px">Check console for details</p></div>`;
+            }
         }
 
         function bayRow(l, b) {
-        const w=160; 
-        const lo = (b?.lo||0), hi = (b?.hi||0), mean = (b?.mean||0);
-        return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:11px;width:36px" class="dim">${l}</span><div style="position:relative;height:14px;width:${w}px"><div style="position:absolute;top:4px;height:6px;border-radius:3px;background:#1a1a2e;width:${w}px"></div><div style="position:absolute;top:4px;height:6px;border-radius:3px;left:${lo*w}px;width:${Math.max(0,(hi-lo)*w)}px;background:linear-gradient(90deg,rgba(0,255,136,0.15),rgba(0,255,136,0.4),rgba(0,255,136,0.15))"></div><div style="position:absolute;top:1px;width:2px;height:12px;background:#00ff88;left:${mean*w}px"></div></div><span class="dim" style="font-size:10px">[${(lo*100).toFixed(0)}-${(hi*100).toFixed(0)}%]</span></div>`;
+            const w = 160;
+            const lo = Number(b && b.lo) || 0;
+            const hi = Number(b && b.hi) || 0;
+            const mean = Number(b && b.mean) || 0;
+            return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:11px;width:36px" class="dim">${l}</span><div style="position:relative;height:14px;width:${w}px"><div style="position:absolute;top:4px;height:6px;border-radius:3px;background:#1a1a2e;width:${w}px"></div><div style="position:absolute;top:4px;height:6px;border-radius:3px;left:${lo*w}px;width:${Math.max(0,(hi-lo)*w)}px;background:linear-gradient(90deg,rgba(0,255,136,0.15),rgba(0,255,136,0.4),rgba(0,255,136,0.15))"></div><div style="position:absolute;top:1px;width:2px;height:12px;background:#00ff88;left:${mean*w}px"></div></div><span class="dim" style="font-size:10px">[${(lo*100).toFixed(0)}-${(hi*100).toFixed(0)}%]</span></div>`;
         }
+
         function zsRow(sym, z) {
-        const w=160, c=w/2, zv = z||0, zc=Math.max(-3,Math.min(3,zv)), p=c+(zc/3)*(w/2), col=Math.abs(zv)>2?'#ff4466':Math.abs(zv)>1?'#ffaa00':'#00ff88';
-        return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:11px;width:36px" class="dim">${sym}</span><div style="position:relative;height:16px;width:${w}px"><div style="position:absolute;top:6px;height:4px;border-radius:2px;background:#1a1a2e;width:${w}px"></div><div style="position:absolute;top:2px;width:1px;height:12px;background:#444;left:${c}px"></div><div style="position:absolute;top:3px;width:8px;height:10px;border-radius:2px;background:${col};left:${p-4}px"></div></div><span style="font-size:11px;color:${col}">${zv.toFixed(2)}</span></div>`;
+            const w = 160, c = w/2;
+            const zv = Number(z) || 0;
+            const zc = Math.max(-3, Math.min(3, zv));
+            const p = c + (zc/3) * (w/2);
+            const col = Math.abs(zv) > 2 ? '#ff4466' : Math.abs(zv) > 1 ? '#ffaa00' : '#00ff88';
+            return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:11px;width:36px" class="dim">${sym}</span><div style="position:relative;height:16px;width:${w}px"><div style="position:absolute;top:6px;height:4px;border-radius:2px;background:#1a1a2e;width:${w}px"></div><div style="position:absolute;top:2px;width:1px;height:12px;background:#444;left:${c}px"></div><div style="position:absolute;top:3px;width:8px;height:10px;border-radius:2px;background:${col};left:${p-4}px"></div></div><span style="font-size:11px;color:${col}">${zv.toFixed(2)}</span></div>`;
         }
 
         // ─── TABS ───
         document.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-        const panel = document.getElementById(tab.dataset.tab);
-        if (!panel) return; // Panel not found (e.g., error state)
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        tab.classList.add('active');
-        panel.classList.add('active');
-        });
+            tab.addEventListener('click', () => {
+                const panel = document.getElementById(tab.dataset.tab);
+                if (!panel) return;
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                tab.classList.add('active');
+                panel.classList.add('active');
+            });
         });
 
         // ─── FETCH ───
         async function fetchState() {
-        if (!CONFIG.binId || !CONFIG.apiKey) {
-        render({ error: 'No JSONBin credentials. Go to Setup tab.' });
-        return;
-        }
-        try {
-        const res = await fetch(`https://api.jsonbin.io/v3/b/${CONFIG.binId}/latest`, {
-        headers: { 'X-Master-Key': CONFIG.apiKey }
-        });
-        const json = await res.json();
-        if (!res.ok) {
-            render({ error: `API Error: ${json.message || res.statusText}` });
-            return;
-        }
-        if (json.record && typeof json.record === 'object') {
-            // Ensure required fields exist
-            const data = {
-                balance: json.record.balance || 0,
-                coins: json.record.coins || {},
-                positions: json.record.positions || {},
-                recent_trades: json.record.recent_trades || [],
-                strategies: json.record.strategies || {},
-                llm_biases: json.record.llm_biases || {},
-                sharpe: json.record.sharpe || 0,
-                drawdown_pct: json.record.drawdown_pct || 0,
-                uptime_sec: json.record.uptime_sec || 0,
-                timestamp: json.record.timestamp || 0,
-                killed: json.record.killed || false,
-                ...json.record
-            };
-            render(data);
-        }
-        else render({ error: 'Empty response from JSONBin. Is bot running?' });
-        } catch (e) {
-        render({ error: `Fetch error: ${e.message}` });
-        }
+            if (!CONFIG.binId || !CONFIG.apiKey) {
+                render({ error: 'No JSONBin credentials. Go to Setup tab.' });
+                return;
+            }
+            try {
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${CONFIG.binId}/latest`, {
+                    headers: { 'X-Master-Key': CONFIG.apiKey }
+                });
+                const json = await res.json();
+                console.log('JSONBin response:', json);
+                if (!res.ok) {
+                    render({ error: `API Error: ${json.message || res.statusText}` });
+                    return;
+                }
+                if (json.record && typeof json.record === 'object') {
+                    render(json.record);
+                } else {
+                    render({ error: 'Empty response from JSONBin. Is bot running?' });
+                }
+            } catch (e) {
+                console.error('Fetch error:', e);
+                render({ error: `Fetch error: ${e.message}` });
+            }
         }
 
         // Auto-show setup if no config
         if (!CONFIG.binId || !CONFIG.apiKey) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        document.querySelector('[data-tab="setup"]').classList.add('active');
-        document.getElementById('setup').classList.add('active');
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelector('[data-tab="setup"]').classList.add('active');
+            document.getElementById('setup').classList.add('active');
         } else {
-        fetchState();
+            fetchState();
         }
 
         setInterval(fetchState, 15000);
