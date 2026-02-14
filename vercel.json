@@ -3,5 +3,7 @@
   "public": true,
   "github": {
     "enabled": false
-  }
+  },
+  "buildCommand": null,
+  "outputDirectory": "public"
 }
