@@ -510,7 +510,7 @@
                     headers: { 'X-Master-Key': CONFIG.apiKey }
                 });
                 const json = await res.json();
-                console.log('JSONBin response:', json);
+                console.log('JSONBin response:', JSON.stringify(json, null, 2));
                 if (!res.ok) {
                     render({ error: `API Error: ${json.message || res.statusText}` });
                     return;
