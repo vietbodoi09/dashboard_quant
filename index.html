@@ -649,12 +649,12 @@
         document.getElementById('statusDot').style.background = isLive ? (d.killed ? '#ff4466' : '#00ff88') : '#ffaa00';
         document.getElementById('liveBadge').className = `live-badge ${isLive ? 'live-on' : 'live-off'}`;
         document.getElementById('liveBadge').innerHTML = `<div class="dot" style="width:6px;height:6px;border-radius:50%;background:${isLive?'#00ff88':'#ffaa00'}"></div><span>${isLive?'LIVE':age<600?'STALE':'OFFLINE'}</span>`;
-        document.getElementById('lastUpdate').textContent = `Updated ${Math.floor(age)}s ago`;
+        document.getElementById('lastUpdate').textContent = `Updated ${Math.floor(age||0)}s ago`;
 
         const allPnl = Object.values(d.coins||{}).flatMap(c => c.recent_pnl || []);
         const totT = Object.values(d.coins||{}).reduce((s, c) => s + c.trades, 0);
         const totW = Object.values(d.coins||{}).reduce((s, c) => s + c.wins, 0);
-        const totPnl = Object.values(d.coins||{}).reduce((s, c) => s + c.pnl, 0);
+        const totPnl = Object.values(d.coins||{}).reduce((s, c) => s + (c.pnl||0), 0);
         const wr = totT > 0 ? totW / totT : 0;
         const g = garchCalc(allPnl);
         const ent = shannonEntropy(allPnl);
@@ -669,8 +669,8 @@
 
         // OVERVIEW
         const stats = [
-        {l:'Balance',v:'$'+d.balance.toFixed(2),c:'#00ff88'},
-        {l:'Total PnL',v:(totPnl>=0?'+':'')+'$'+totPnl.toFixed(2),c:totPnl>=0?'#00ff88':'#ff4466'},
+        {l:'Balance',v:'$'+((d.balance||0)).toFixed(2),c:'#00ff88'},
+        {l:'Total PnL',v:(totPnl>=0?'+':'')+'$'+(totPnl||0).toFixed(2),c:(totPnl||0)>=0?'#00ff88':'#ff4466'},
         {l:'Win Rate',v:(wr*100).toFixed(0)+'%',c:wr>=0.5?'#00ff88':'#ffaa00'},
         {l:'Trades',v:totT,c:'#8888ff'},
         {l:'Sharpe',v:(d.sharpe||0).toFixed(2),c:(d.sharpe||0)>1?'#00ff88':'#ffaa00'},
@@ -681,11 +681,11 @@
         // Coins
         let ch = '<div class="card-title">Coins</div>';
         for (const [sym, c] of Object.entries(d.coins||{})) {
-        const cwr = c.trades > 0 ? (c.wins/c.trades*100).toFixed(0) : 0;
-        const pc = c.pnl >= 0 ? '#00ff88' : '#ff4466';
+        const cwr = (c.trades||0) > 0 ? ((c.wins||0)/c.trades*100).toFixed(0) : 0;
+        const pc = (c.pnl||0) >= 0 ? '#00ff88' : '#ff4466';
         const bias = (d.llm_biases||{})[sym];
         const bb = bias ? `<span class="bias-badge" style="background:${bias.bias==='LONG'?'rgba(0,255,136,0.1)':bias.bias==='SHORT'?'rgba(255,68,102,0.1)':'rgba(255,170,0,0.1)'};color:${bias.bias==='LONG'?'#00ff88':bias.bias==='SHORT'?'#ff4466':'#ffaa00'}">${bias.bias} ${(bias.conf*100).toFixed(0)}%</span>` : '';
-        ch += `<div class="coin-row"><div class="coin-left"><div class="coin-icon" style="background:${c.pnl>=0?'rgba(0,255,136,0.12)':'rgba(255,68,102,0.12)'};color:${pc}">${sym.slice(0,2)}</div><div><div style="font-size:13px;font-weight:500">${sym}</div><div style="font-size:10px" class="dim">${c.regime} | ${c.score.toFixed(2)}</div></div></div><div class="coin-right">${sparkSVG(c.recent_pnl||[],60,24)}<div style="text-align:right"><div style="color:${pc}">${c.pnl>=0?'+':''}$${c.pnl.toFixed(2)}</div><div class="dim" style="font-size:10px">${c.trades}t ${cwr}%WR</div></div>${bb}</div></div>`;
+        ch += `<div class="coin-row"><div class="coin-left"><div class="coin-icon" style="background:${(c.pnl||0)>=0?'rgba(0,255,136,0.12)':'rgba(255,68,102,0.12)'};color:${pc}">${sym.slice(0,2)}</div><div><div style="font-size:13px;font-weight:500">${sym}</div><div style="font-size:10px" class="dim">${c.regime||'unknown'} | ${(c.score||0).toFixed(2)}</div></div></div><div class="coin-right">${sparkSVG(c.recent_pnl||[],60,24)}<div style="text-align:right"><div style="color:${pc}">${(c.pnl||0)>=0?'+':''}$${(c.pnl||0).toFixed(2)}</div><div class="dim" style="font-size:10px">${c.trades||0}t ${cwr}%WR</div></div>${bb}</div></div>`;
         }
         document.getElementById('coinList').innerHTML = ch;
 
@@ -774,10 +774,12 @@
         // ─── TABS ───
         document.querySelectorAll('.tab').forEach(tab => {
         tab.addEventListener('click', () => {
+        const panel = document.getElementById(tab.dataset.tab);
+        if (!panel) return; // Panel not found (e.g., error state)
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
         tab.classList.add('active');
-        document.getElementById(tab.dataset.tab).classList.add('active');
+        panel.classList.add('active');
         });
         });
 
@@ -792,7 +794,28 @@
         headers: { 'X-Master-Key': CONFIG.apiKey }
         });
         const json = await res.json();
-        if (json.record) render(json.record);
+        if (!res.ok) {
+            render({ error: `API Error: ${json.message || res.statusText}` });
+            return;
+        }
+        if (json.record && typeof json.record === 'object') {
+            // Ensure required fields exist
+            const data = {
+                balance: json.record.balance || 0,
+                coins: json.record.coins || {},
+                positions: json.record.positions || {},
+                recent_trades: json.record.recent_trades || [],
+                strategies: json.record.strategies || {},
+                llm_biases: json.record.llm_biases || {},
+                sharpe: json.record.sharpe || 0,
+                drawdown_pct: json.record.drawdown_pct || 0,
+                uptime_sec: json.record.uptime_sec || 0,
+                timestamp: json.record.timestamp || 0,
+                killed: json.record.killed || false,
+                ...json.record
+            };
+            render(data);
+        }
         else render({ error: 'Empty response from JSONBin. Is bot running?' });
         } catch (e) {
         render({ error: `Fetch error: ${e.message}` });
