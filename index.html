@@ -630,8 +630,9 @@
         return `<svg width="${w}" height="${h}"><polyline points="${pts}" fill="none" stroke="${cum[cum.length-1]>=0?'#00ff88':'#ff4466'}" stroke-width="1.5"/></svg>`;
         }
         function gaugeSVG(val, max, label, color, unit) {
-        const pct = Math.min(100, (val / max) * 100);
-        return `<div class="gauge-wrap"><svg viewBox="0 0 36 36" width="68" height="68" style="transform:rotate(-90deg)"><path d="M18 2.0845a15.9155 15.9155 0 010 31.831 15.9155 15.9155 0 010-31.831" fill="none" stroke="#1a1a2e" stroke-width="3"/><path d="M18 2.0845a15.9155 15.9155 0 010 31.831 15.9155 15.9155 0 010-31.831" fill="none" stroke="${color}" stroke-width="3" stroke-dasharray="${pct},100"/></svg><div style="margin-top:-48px;font-size:11px;font-weight:600;color:${color}">${val.toFixed(2)}${unit||'%'}</div><div class="gauge-label" style="margin-top:22px">${label}</div></div>`;
+        const v = val||0;
+        const pct = Math.min(100, (v / (max||1)) * 100);
+        return `<div class="gauge-wrap"><svg viewBox="0 0 36 36" width="68" height="68" style="transform:rotate(-90deg)"><path d="M18 2.0845a15.9155 15.9155 0 010 31.831 15.9155 15.9155 0 010-31.831" fill="none" stroke="#1a1a2e" stroke-width="3"/><path d="M18 2.0845a15.9155 15.9155 0 010 31.831 15.9155 15.9155 0 010-31.831" fill="none" stroke="${color}" stroke-width="3" stroke-dasharray="${pct},100"/></svg><div style="margin-top:-48px;font-size:11px;font-weight:600;color:${color}">${v.toFixed(2)}${unit||'%'}</div><div class="gauge-label" style="margin-top:22px">${label}</div></div>`;
         }
 
         // ─── RENDER ───
@@ -671,7 +672,7 @@
         const stats = [
         {l:'Balance',v:'$'+((d.balance||0)).toFixed(2),c:'#00ff88'},
         {l:'Total PnL',v:(totPnl>=0?'+':'')+'$'+(totPnl||0).toFixed(2),c:(totPnl||0)>=0?'#00ff88':'#ff4466'},
-        {l:'Win Rate',v:(wr*100).toFixed(0)+'%',c:wr>=0.5?'#00ff88':'#ffaa00'},
+        {l:'Win Rate',v:((wr||0)*100).toFixed(0)+'%',c:(wr||0)>=0.5?'#00ff88':'#ffaa00'},
         {l:'Trades',v:totT,c:'#8888ff'},
         {l:'Sharpe',v:(d.sharpe||0).toFixed(2),c:(d.sharpe||0)>1?'#00ff88':'#ffaa00'},
         {l:'DD',v:(d.drawdown_pct||0).toFixed(1)+'%',c:(d.drawdown_pct||0)<3?'#00ff88':(d.drawdown_pct||0)<5?'#ffaa00':'#ff4466'},
@@ -684,7 +685,7 @@
         const cwr = (c.trades||0) > 0 ? ((c.wins||0)/c.trades*100).toFixed(0) : 0;
         const pc = (c.pnl||0) >= 0 ? '#00ff88' : '#ff4466';
         const bias = (d.llm_biases||{})[sym];
-        const bb = bias ? `<span class="bias-badge" style="background:${bias.bias==='LONG'?'rgba(0,255,136,0.1)':bias.bias==='SHORT'?'rgba(255,68,102,0.1)':'rgba(255,170,0,0.1)'};color:${bias.bias==='LONG'?'#00ff88':bias.bias==='SHORT'?'#ff4466':'#ffaa00'}">${bias.bias} ${(bias.conf*100).toFixed(0)}%</span>` : '';
+        const bb = bias ? `<span class="bias-badge" style="background:${bias.bias==='LONG'?'rgba(0,255,136,0.1)':bias.bias==='SHORT'?'rgba(255,68,102,0.1)':'rgba(255,170,0,0.1)'};color:${bias.bias==='LONG'?'#00ff88':bias.bias==='SHORT'?'#ff4466':'#ffaa00'}">${bias.bias} ${((bias.conf||0)*100).toFixed(0)}%</span>` : '';
         ch += `<div class="coin-row"><div class="coin-left"><div class="coin-icon" style="background:${(c.pnl||0)>=0?'rgba(0,255,136,0.12)':'rgba(255,68,102,0.12)'};color:${pc}">${sym.slice(0,2)}</div><div><div style="font-size:13px;font-weight:500">${sym}</div><div style="font-size:10px" class="dim">${c.regime||'unknown'} | ${(c.score||0).toFixed(2)}</div></div></div><div class="coin-right">${sparkSVG(c.recent_pnl||[],60,24)}<div style="text-align:right"><div style="color:${pc}">${(c.pnl||0)>=0?'+':''}$${(c.pnl||0).toFixed(2)}</div><div class="dim" style="font-size:10px">${c.trades||0}t ${cwr}%WR</div></div>${bb}</div></div>`;
         }
         document.getElementById('coinList').innerHTML = ch;
@@ -696,17 +697,19 @@
         for (const t of tt.slice(0,10)) {
         const sc = t.side==='long'?'side-long':'side-short';
         const stc = t.status==='open'?'st-open':t.status==='win'?'st-win':'st-loss';
-        const ps = t.pnl!=null?`<span style="color:${t.pnl>=0?'#00ff88':'#ff4466'}">${t.pnl>=0?'+':''}${t.pnl.toFixed(2)}</span>`:`<span style="color:#ffaa00">${t.roi!=null?t.roi+'%':'-'}</span>`;
-        const es = t.entry>100?t.entry.toFixed(0):t.entry;
-        rh += `<div class="trade-row"><div style="display:flex;align-items:center;gap:6px"><span class="dim" style="width:56px;font-size:10px">${t.time}</span><span class="side-badge ${sc}">${t.side.toUpperCase()}</span><span>${t.symbol}</span></div><div style="display:flex;align-items:center;gap:6px">${ps}<span class="status-badge ${stc}">${t.status.toUpperCase()}</span></div></div>`;
+        const ps = t.pnl!=null?`<span style="color:${(t.pnl||0)>=0?'#00ff88':'#ff4466'}">${(t.pnl||0)>=0?'+':''}${(t.pnl||0).toFixed(2)}</span>`:`<span style="color:#ffaa00">${(t.roi!=null && t.roi!==undefined)?(t.roi+'%'):'-'}</span>`;
+        const es = t.entry>100?(t.entry||0).toFixed(0):(t.entry||0);
+        rh += `<div class="trade-row"><div style="display:flex;align-items:center;gap:6px"><span class="dim" style="width:56px;font-size:10px">${t.time||'--'}</span><span class="side-badge ${sc}">${(t.side||'').toUpperCase()}</span><span>${t.symbol||'--'}</span></div><div style="display:flex;align-items:center;gap:6px">${ps}<span class="status-badge ${stc}">${(t.status||'').toUpperCase()}</span></div></div>`;
         }
         document.getElementById('recentTrades').innerHTML = rh;
 
         // QUANT
+        const gSafe = {cur: g?.cur||0, fore: g?.fore||0, vov: g?.vov||0};
+        const entSafe = ent||0, pfSafe = pf||0, kfSafe = kf||0;
         document.getElementById('quantGauges').innerHTML = [
-        gaugeSVG(g.cur,2,'GARCH Vol','#8888ff'), gaugeSVG(g.fore,2,'Vol Forecast',g.fore>g.cur?'#ff4466':'#00ff88'),
-        gaugeSVG(ent*100,100,'Entropy',ent>0.7?'#ff4466':'#00ff88'), gaugeSVG(kf*100,25,'Kelly %','#00ff88'),
-        gaugeSVG(pf,3,'Profit Factor',pf>1?'#00ff88':'#ff4466','x'), gaugeSVG(d.sharpe||0,3,'Sharpe',(d.sharpe||0)>1?'#00ff88':'#ffaa00'),
+        gaugeSVG(gSafe.cur,2,'GARCH Vol','#8888ff'), gaugeSVG(gSafe.fore,2,'Vol Forecast',gSafe.fore>gSafe.cur?'#ff4466':'#00ff88'),
+        gaugeSVG(entSafe*100,100,'Entropy',entSafe>0.7?'#ff4466':'#00ff88'), gaugeSVG(kfSafe*100,25,'Kelly %','#00ff88'),
+        gaugeSVG(pfSafe,3,'Profit Factor',pfSafe>1?'#00ff88':'#ff4466','x'), gaugeSVG(d.sharpe||0,3,'Sharpe',(d.sharpe||0)>1?'#00ff88':'#ffaa00'),
         ].join('');
 
         let byH = '<div class="card-title">Bayesian Win Rate (95% CI)</div>';
@@ -719,8 +722,8 @@
         for (const [sym, c] of Object.entries(d.coins||{}).filter(([_,c])=>(c.recent_pnl||[]).length>=3)) zsH += zsRow(sym, zScore(c.recent_pnl));
         document.getElementById('zscoreCard').innerHTML = zsH;
 
-        document.getElementById('garchCard').innerHTML = `<div class="card-title">GARCH Volatility</div><div class="grid g3"><div><div class="stat-label">Current</div><div class="stat-val blue">${g.cur.toFixed(3)}%</div></div><div><div class="stat-label">Forecast</div><div class="stat-val" style="color:${g.fore>g.cur?'#ff4466':'#00ff88'}">${g.fore.toFixed(3)}%</div></div><div><div class="stat-label">Vol-of-Vol</div><div class="stat-val yellow">${g.vov.toFixed(3)}%</div></div></div>`;
-        document.getElementById('entropyCard').innerHTML = `<div class="card-title">Shannon Entropy</div><div style="display:flex;align-items:center;gap:16px"><div class="stat-val" style="color:${ent>0.7?'#ff4466':ent>0.5?'#ffaa00':'#00ff88'}">${(ent*100).toFixed(1)}%</div><div style="flex:1"><div class="bar-bg"><div class="bar-fill" style="width:${ent*100}%;background:linear-gradient(90deg,#00ff88,#ffaa00,#ff4466)"></div></div></div><span class="dim" style="font-size:10px">${ent>0.7?'HIGH':ent>0.5?'MOD':'LOW'}</span></div>`;
+        document.getElementById('garchCard').innerHTML = `<div class="card-title">GARCH Volatility</div><div class="grid g3"><div><div class="stat-label">Current</div><div class="stat-val blue">${(g.cur||0).toFixed(3)}%</div></div><div><div class="stat-label">Forecast</div><div class="stat-val" style="color:${g.fore>g.cur?'#ff4466':'#00ff88'}">${(g.fore||0).toFixed(3)}%</div></div><div><div class="stat-label">Vol-of-Vol</div><div class="stat-val yellow">${(g.vov||0).toFixed(3)}%</div></div></div>`;
+        const entV = ent||0; document.getElementById('entropyCard').innerHTML = `<div class="card-title">Shannon Entropy</div><div style="display:flex;align-items:center;gap:16px"><div class="stat-val" style="color:${entV>0.7?'#ff4466':entV>0.5?'#ffaa00':'#00ff88'}">${(entV*100).toFixed(1)}%</div><div style="flex:1"><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(100,entV*100)}%;background:linear-gradient(90deg,#00ff88,#ffaa00,#ff4466)"></div></div></div><span class="dim" style="font-size:10px">${entV>0.7?'HIGH':entV>0.5?'MOD':'LOW'}</span></div>`;
 
         // POSITIONS
         let pH = '<div class="card-title">Open Positions</div>';
@@ -728,13 +731,17 @@
         if (!pe.length) pH += '<div class="dim" style="padding:20px;text-align:center">No open positions</div>';
         for (const [sym, pos] of pe) {
         const col = pos.side==='long'?'#00ff88':'#ff4466';
-        pH += `<div class="pos-card" style="border-color:${col}"><div style="display:flex;justify-content:space-between;align-items:center"><div><span class="side-badge ${pos.side==='long'?'side-long':'side-short'}">${pos.side.toUpperCase()}</span><span style="font-weight:600;margin-left:8px">${sym}</span></div><div style="text-align:right"><div style="color:${pos.upnl_pct>=0?'#00ff88':'#ff4466'};font-size:16px;font-weight:600">${pos.upnl_pct>=0?'+':''}${pos.upnl_pct}%</div></div></div><div style="display:flex;gap:16px;margin-top:8px;font-size:11px;flex-wrap:wrap" class="dim"><span>Entry: $${pos.entry>100?pos.entry.toFixed(0):pos.entry}</span><span>Now: $${pos.current_price>100?pos.current_price.toFixed(0):pos.current_price}</span><span>SL: $${pos.sl>100?pos.sl.toFixed(0):pos.sl}</span><span>Size: $${pos.size_usd}</span></div></div>`;
+        const upnl = pos.upnl_pct||0; pH += `<div class="pos-card" style="border-color:${col}"><div style="display:flex;justify-content:space-between;align-items:center"><div><span class="side-badge ${pos.side==='long'?'side-long':'side-short'}">${(pos.side||'').toUpperCase()}</span><span style="font-weight:600;margin-left:8px">${sym}</span></div><div style="text-align:right"><div style="color:${upnl>=0?'#00ff88':'#ff4466'};font-size:16px;font-weight:600">${upnl>=0?'+':''}${upnl.toFixed ? upnl.toFixed(1) : upnl}%</div></div></div><div style="display:flex;gap:16px;margin-top:8px;font-size:11px;flex-wrap:wrap" class="dim"><span>Entry: $${(pos.entry||0)>100?(pos.entry||0).toFixed(0):(pos.entry||0)}</span><span>Now: $${(pos.current_price||0)>100?(pos.current_price||0).toFixed(0):(pos.current_price||0)}</span><span>SL: $${(pos.sl||0)>100?(pos.sl||0).toFixed(0):(pos.sl||0)}</span><span>Size: $${pos.size_usd||0}</span></div></div>`;
         }
         document.getElementById('positionsCard').innerHTML = pH;
 
         // TRADES
         let tH = '<div class="card-title">Trade Log</div><table><thead><tr><th>Time</th><th>Coin</th><th>Side</th><th>Entry</th><th>PnL</th></tr></thead><tbody>';
-        for (const t of [...(d.recent_trades||[])].reverse()) tH += `<tr><td class="dim">${t.time}</td><td>${t.symbol}</td><td><span class="side-badge ${t.side==='long'?'side-long':'side-short'}">${t.side.toUpperCase()}</span></td><td class="dim">$${t.entry>100?t.entry.toFixed(0):t.entry}</td><td style="color:${(t.pnl||0)>=0?'#00ff88':'#ff4466'}">${t.pnl!=null?(t.pnl>=0?'+':'')+t.pnl.toFixed(2):'-'}</td></tr>`;
+        for (const t of [...(d.recent_trades||[])].reverse()) {
+            const entry = t.entry||0;
+            const pnl = t.pnl;
+            tH += `<tr><td class="dim">${t.time||'--'}</td><td>${t.symbol||'--'}</td><td><span class="side-badge ${(t.side||'')==='long'?'side-long':'side-short'}">${(t.side||'').toUpperCase()}</span></td><td class="dim">$${entry>100?entry.toFixed(0):entry}</td><td style="color:${(pnl||0)>=0?'#00ff88':'#ff4466'}">${pnl!=null?(pnl>=0?'+':'')+pnl.toFixed(2):'-'}</td></tr>`;
+        }
         tH += '</tbody></table>';
         document.getElementById('tradeTable').innerHTML = tH;
 
@@ -742,7 +749,7 @@
         let sH = '<div class="card-title">Strategy Edge</div>';
         for (const [n, st] of Object.entries(d.strategies||{})) {
         const c = st.edge>0.6?'#00ff88':st.edge<0.4?'#ff4466':'#ffaa00';
-        sH += `<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span class="dim">${n}</span><span style="color:${c}">${st.edge.toFixed(2)} | ${st.trades}t</span></div><div class="bar-bg"><div class="bar-fill" style="width:${st.edge*100}%;background:${c}"></div></div></div>`;
+        const edgeVal = st.edge||0; sH += `<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span class="dim">${n}</span><span style="color:${c}">${edgeVal.toFixed(2)} | ${st.trades||0}t</span></div><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(100,edgeVal*100)}%;background:${c}"></div></div></div>`;
         }
         document.getElementById('strategyCard').innerHTML = sH;
 
@@ -752,23 +759,31 @@
         ddH += `<div style="margin-top:8px;font-size:11px">Current: <span style="color:${(d.drawdown_pct||0)<3?'#00ff88':'#ffaa00'}">${(d.drawdown_pct||0).toFixed(2)}%</span></div>`;
         document.getElementById('ddCard').innerHTML = ddH;
 
-        document.getElementById('kellyCard').innerHTML = `<div class="card-title">Kelly</div><div><div class="stat-label">Full</div><div class="stat-val yellow">${(kf*2*100).toFixed(1)}%</div></div><div style="margin-top:8px"><div class="stat-label">Half (used)</div><div class="stat-val green">${(kf*100).toFixed(1)}%</div></div>`;
+        const kfSafe = kf||0; document.getElementById('kellyCard').innerHTML = `<div class="card-title">Kelly</div><div><div class="stat-label">Full</div><div class="stat-val yellow">${(kfSafe*2*100).toFixed(1)}%</div></div><div style="margin-top:8px"><div class="stat-label">Half (used)</div><div class="stat-val green">${(kfSafe*100).toFixed(1)}%</div></div>`;
 
         let rgH = '<div class="card-title">Regime</div>';
-        for (const [sym, c] of Object.entries(d.coins||{})) rgH += `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03)"><span>${sym}</span><span style="color:${c.regime.includes('bull')?'#00ff88':c.regime.includes('bear')?'#ff4466':'#ffaa00'}">${c.regime}</span></div>`;
+        for (const [sym, c] of Object.entries(d.coins||{})) {
+            const regime = c.regime||'unknown';
+            rgH += `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03)"><span>${sym}</span><span style="color:${regime.includes('bull')?'#00ff88':regime.includes('bear')?'#ff4466':'#ffaa00'}">${regime}</span></div>`;
+        }
         document.getElementById('regimeCard').innerHTML = rgH;
 
         let llH = '<div class="card-title">LLM Biases</div>';
-        for (const [sym, b] of Object.entries(d.llm_biases||{})) llH += `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03)"><span>${sym}</span><span style="color:${b.bias==='LONG'?'#00ff88':b.bias==='SHORT'?'#ff4466':'#ffaa00'}">${b.bias} ${(b.conf*100).toFixed(0)}%</span></div>`;
+        for (const [sym, b] of Object.entries(d.llm_biases||{})) {
+            const bias = (b?.bias)||'NEUTRAL';
+            llH += `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03)"><span>${sym}</span><span style="color:${bias==='LONG'?'#00ff88':bias==='SHORT'?'#ff4466':'#ffaa00'}">${bias} ${((b?.conf||0)*100).toFixed(0)}%</span></div>`;
+        }
         document.getElementById('llmCard').innerHTML = llH;
         }
 
         function bayRow(l, b) {
-        const w=160; return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:11px;width:36px" class="dim">${l}</span><div style="position:relative;height:14px;width:${w}px"><div style="position:absolute;top:4px;height:6px;border-radius:3px;background:#1a1a2e;width:${w}px"></div><div style="position:absolute;top:4px;height:6px;border-radius:3px;left:${b.lo*w}px;width:${(b.hi-b.lo)*w}px;background:linear-gradient(90deg,rgba(0,255,136,0.15),rgba(0,255,136,0.4),rgba(0,255,136,0.15))"></div><div style="position:absolute;top:1px;width:2px;height:12px;background:#00ff88;left:${b.mean*w}px"></div></div><span class="dim" style="font-size:10px">[${(b.lo*100).toFixed(0)}-${(b.hi*100).toFixed(0)}%]</span></div>`;
+        const w=160; 
+        const lo = (b?.lo||0), hi = (b?.hi||0), mean = (b?.mean||0);
+        return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:11px;width:36px" class="dim">${l}</span><div style="position:relative;height:14px;width:${w}px"><div style="position:absolute;top:4px;height:6px;border-radius:3px;background:#1a1a2e;width:${w}px"></div><div style="position:absolute;top:4px;height:6px;border-radius:3px;left:${lo*w}px;width:${Math.max(0,(hi-lo)*w)}px;background:linear-gradient(90deg,rgba(0,255,136,0.15),rgba(0,255,136,0.4),rgba(0,255,136,0.15))"></div><div style="position:absolute;top:1px;width:2px;height:12px;background:#00ff88;left:${mean*w}px"></div></div><span class="dim" style="font-size:10px">[${(lo*100).toFixed(0)}-${(hi*100).toFixed(0)}%]</span></div>`;
         }
         function zsRow(sym, z) {
-        const w=160, c=w/2, zc=Math.max(-3,Math.min(3,z)), p=c+(zc/3)*(w/2), col=Math.abs(z)>2?'#ff4466':Math.abs(z)>1?'#ffaa00':'#00ff88';
-        return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:11px;width:36px" class="dim">${sym}</span><div style="position:relative;height:16px;width:${w}px"><div style="position:absolute;top:6px;height:4px;border-radius:2px;background:#1a1a2e;width:${w}px"></div><div style="position:absolute;top:2px;width:1px;height:12px;background:#444;left:${c}px"></div><div style="position:absolute;top:3px;width:8px;height:10px;border-radius:2px;background:${col};left:${p-4}px"></div></div><span style="font-size:11px;color:${col}">${z.toFixed(2)}</span></div>`;
+        const w=160, c=w/2, zv = z||0, zc=Math.max(-3,Math.min(3,zv)), p=c+(zc/3)*(w/2), col=Math.abs(zv)>2?'#ff4466':Math.abs(zv)>1?'#ffaa00':'#00ff88';
+        return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:11px;width:36px" class="dim">${sym}</span><div style="position:relative;height:16px;width:${w}px"><div style="position:absolute;top:6px;height:4px;border-radius:2px;background:#1a1a2e;width:${w}px"></div><div style="position:absolute;top:2px;width:1px;height:12px;background:#444;left:${c}px"></div><div style="position:absolute;top:3px;width:8px;height:10px;border-radius:2px;background:${col};left:${p-4}px"></div></div><span style="font-size:11px;color:${col}">${zv.toFixed(2)}</span></div>`;
         }
 
         // ─── TABS ───
