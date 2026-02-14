@@ -637,6 +637,7 @@
 
         // ─── RENDER ───
         function render(d) {
+        try {
         if (d.error) {
         document.querySelector('.content').innerHTML = `<div class="error-box"><h2>${d.error.includes('not found') ? 'Bot Offline' : 'Setup Required'}</h2><p style="max-width:400px;margin:0 auto">${d.error}</p><p class="dim" style="margin-top:12px">Go to Setup tab to configure JSONBin credentials</p></div>`;
         document.getElementById('liveBadge').className = 'live-badge live-off';
@@ -653,8 +654,8 @@
         document.getElementById('lastUpdate').textContent = `Updated ${Math.floor(age||0)}s ago`;
 
         const allPnl = Object.values(d.coins||{}).flatMap(c => c.recent_pnl || []);
-        const totT = Object.values(d.coins||{}).reduce((s, c) => s + c.trades, 0);
-        const totW = Object.values(d.coins||{}).reduce((s, c) => s + c.wins, 0);
+        const totT = Object.values(d.coins||{}).reduce((s, c) => s + (c.trades||0), 0);
+        const totW = Object.values(d.coins||{}).reduce((s, c) => s + (c.wins||0), 0);
         const totPnl = Object.values(d.coins||{}).reduce((s, c) => s + (c.pnl||0), 0);
         const wr = totT > 0 ? totW / totT : 0;
         const g = garchCalc(allPnl);
@@ -673,7 +674,7 @@
         {l:'Balance',v:'$'+((d.balance||0)).toFixed(2),c:'#00ff88'},
         {l:'Total PnL',v:(totPnl>=0?'+':'')+'$'+(totPnl||0).toFixed(2),c:(totPnl||0)>=0?'#00ff88':'#ff4466'},
         {l:'Win Rate',v:((wr||0)*100).toFixed(0)+'%',c:(wr||0)>=0.5?'#00ff88':'#ffaa00'},
-        {l:'Trades',v:totT,c:'#8888ff'},
+        {l:'Trades',v:totT||0,c:'#8888ff'},
         {l:'Sharpe',v:(d.sharpe||0).toFixed(2),c:(d.sharpe||0)>1?'#00ff88':'#ffaa00'},
         {l:'DD',v:(d.drawdown_pct||0).toFixed(1)+'%',c:(d.drawdown_pct||0)<3?'#00ff88':(d.drawdown_pct||0)<5?'#ffaa00':'#ff4466'},
         ];
@@ -713,8 +714,11 @@
         ].join('');
 
         let byH = '<div class="card-title">Bayesian Win Rate (95% CI)</div>';
-        byH += bayRow('ALL', bayesianBeta(totW, totT-totW));
-        for (const [sym, c] of Object.entries(d.coins||{}).filter(([_,c])=>c.trades>0)) byH += bayRow(sym, bayesianBeta(c.wins, c.trades-c.wins));
+        byH += bayRow('ALL', bayesianBeta(totW||0, (totT-totW)||0));
+        for (const [sym, c] of Object.entries(d.coins||{}).filter(([_,c])=>(c.trades||0)>0)) {
+            const w = c.wins||0, l = Math.max(0, (c.trades||0)-w);
+            byH += bayRow(sym, bayesianBeta(w, l));
+        }
         byH += '<div class="dim" style="font-size:10px;margin-top:8px">Narrow = confident | Wide = need data</div>';
         document.getElementById('bayesianCard').innerHTML = byH;
 
@@ -774,6 +778,10 @@
             llH += `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03)"><span>${sym}</span><span style="color:${bias==='LONG'?'#00ff88':bias==='SHORT'?'#ff4466':'#ffaa00'}">${bias} ${((b?.conf||0)*100).toFixed(0)}%</span></div>`;
         }
         document.getElementById('llmCard').innerHTML = llH;
+        } catch(e) {
+            console.error('Render error:', e, 'at line:', e.lineNumber);
+            document.querySelector('.content').innerHTML = `<div class="error-box"><h2>Render Error</h2><p style="max-width:400px;margin:0 auto">${e.message}</p><p class="dim" style="margin-top:12px">Check console for details</p></div>`;
+        }
         }
 
         function bayRow(l, b) {
