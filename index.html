@@ -516,6 +516,14 @@
                     return;
                 }
                 if (json.record && typeof json.record === 'object') {
+                    console.log('JSONBin record:', json.record);
+                    // Check if it's waiting status or empty
+                    if (json.record.status === 'waiting' || !json.record.coins) {
+                        render({ 
+                            error: 'Bot is initializing (status: waiting).<br>Please wait 30-60s for first data sync.<br><br>If this persists, check if bot is running.' 
+                        });
+                        return;
+                    }
                     render(json.record);
                 } else {
                     render({ error: 'Empty response from JSONBin. Is bot running?' });
